@@ -12,6 +12,7 @@ const SearchBar = ({ onSubmit }) => {
       toast('You must enter text to search for images');
     } else {
       onSubmit(searchText);
+      setSearchText('');
     }
   };
 

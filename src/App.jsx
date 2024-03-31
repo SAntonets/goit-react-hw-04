@@ -6,17 +6,31 @@ import { useState } from 'react'
 import './App.css'
 import 'normalize.css';
 import { toast, Toaster } from 'react-hot-toast';
+import { TailSpin } from 'react-loader-spinner'
+
 
 
 
 function App() {
 
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+ 
 
-  const onSubmit = (searchText) => {
-    searchImages(searchText)
-    return images;
-  };
-  
+  const onSubmit = async (searchText) => {
+    try {
+    setImages([]);
+    setLoading(true);
+    const dataImages = await searchImages(searchText); 
+    setImages(dataImages);
+  } catch (error) {
+    console.error('Error fetching images:', error.message);
+    toast.error('Failed to fetch images');
+  } finally {
+        setLoading(false);
+      }
+};
+
   return (
     <>
         <Toaster
@@ -24,7 +38,8 @@ function App() {
   reverseOrder={false}
 />
       <SearchBar onSubmit={onSubmit} />
-      <ImageGallery images={images}/>
+      {!images || images.length === 0 ? <ImageGallery images={[]} /> : <ImageGallery images={images} />}
+      {loading && <TailSpin />}
       
         
     </>

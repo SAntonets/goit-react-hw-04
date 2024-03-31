@@ -3,7 +3,8 @@ import axios from 'axios';
 const ACCESS_KEY = 'PId6GjeQ_obh_Sys5wkx9HFhQRvv3YmIj74Modod6jY'; 
 async function searchImages(query) {
   const url = `https://api.unsplash.com/search/photos`;
-  
+
+
   try {
     const response = await axios.get(url, {
       params: {
@@ -13,7 +14,7 @@ async function searchImages(query) {
         Authorization: `Client-ID ${ACCESS_KEY}`
       }
     });
-    const images = response.data.results;
+    const images = (response.data.results);
     return images; 
     
   } catch (error) {
