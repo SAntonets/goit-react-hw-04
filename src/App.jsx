@@ -1,6 +1,7 @@
 import SearchBar from './Components/SearchBar/SearchBar'
 import searchImages from './Components/API/API';
 import ImageGallery from './Components/ImageGallery/ImageGallery';
+import LoadMoreBtn from './Components/LoadMoreBtn/LoadMoreBtn'
 
 import { useState } from 'react'
 import './App.css'
@@ -15,21 +16,43 @@ function App() {
 
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
- 
+  const [page, setPage] = useState(1);
+  const [searchWord, setSearchWord] = useState("");
+  const [totalPages, setTotalPages] = useState(0)
 
   const onSubmit = async (searchText) => {
+    setSearchWord(searchText);
     try {
     setImages([]);
     setLoading(true);
-    const dataImages = await searchImages(searchText); 
-    setImages(dataImages);
+    const data = await searchImages(searchText, page); 
+      setImages(data.images);
+      setTotalPages(data.total)
   } catch (error) {
     console.error('Error fetching images:', error.message);
     toast.error('Failed to fetch images');
   } finally {
-        setLoading(false);
+      setLoading(false);
       }
+  };
+
+
+const onClick = async () => {
+  try {
+    setLoading(true);
+    const nextPageImages = await searchImages(searchWord, page + 1);
+    setImages(prevImages => [...prevImages, ...nextPageImages.images]);
+    setPage(prevPage => prevPage + 1);
+  } catch (error) {
+    console.error('Error fetching images:', error.message);
+    toast.error('Failed to fetch images');
+  } finally {
+    setLoading(false);
+  }
 };
+
+  
+  
 
   return (
     <>
@@ -40,6 +63,8 @@ function App() {
       <SearchBar onSubmit={onSubmit} />
       {!images || images.length === 0 ? <ImageGallery images={[]} /> : <ImageGallery images={images} />}
       {loading && <TailSpin />}
+      {page < totalPages && <LoadMoreBtn  onClick={onClick} />}
+      
       
         
     </>
