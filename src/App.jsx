@@ -1,14 +1,22 @@
+import 'normalize.css';
+import { toast, Toaster } from 'react-hot-toast';
+import { TailSpin } from 'react-loader-spinner';
+import { useState, useRef } from 'react'
+import Modal from 'react-modal';
+
+
 import SearchBar from './Components/SearchBar/SearchBar'
 import searchImages from './Components/API/API';
 import ImageGallery from './Components/ImageGallery/ImageGallery';
 import LoadMoreBtn from './Components/LoadMoreBtn/LoadMoreBtn';
+import ModalWindow from './Components/ModalWindow/ModalWindow';
 
-import { useState, useRef } from 'react'
+
 import './App.css'
-import 'normalize.css';
-import { toast, Toaster } from 'react-hot-toast';
-import { TailSpin } from 'react-loader-spinner';
-import Modal from 'react-modal';
+
+
+
+
 
 
 
@@ -21,7 +29,11 @@ function App() {
   const [searchWord, setSearchWord] = useState("");
   const [totalPages, setTotalPages] = useState(0);
   const containerRef = useRef(null);
- 
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [imgId, setImgId] = useState("");
+
+
+ Modal.setAppElement('#root');
 
 
   const onSubmit = async (searchText) => {
@@ -58,11 +70,21 @@ const onClick = async () => {
   }
 };
 
+  function openModal() {
+    setIsOpen(true);
 
-  
+  }
 
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    //subtitle.style.color = '#f00';
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
   
-  
+ 
 
   return (
     <>
@@ -72,11 +94,23 @@ const onClick = async () => {
 />
       <SearchBar onSubmit={onSubmit} />
    
-        {!images || images.length === 0 ? <ImageGallery images={[]} /> : <ImageGallery ref={containerRef} images={images} />}
+      {!images || images.length === 0 ? <ImageGallery images={[]} /> : <ImageGallery ref={containerRef} images={images} openModal={openModal} setImgId={setImgId} />}
     
       {loading && <TailSpin />}
-      {page < totalPages && <LoadMoreBtn  onClick={onClick} />}
+      {page < totalPages && <LoadMoreBtn onClick={onClick} />}
       
+
+      <>
+      <Modal
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+        //style={customStyles}
+        contentLabel="Example Modal"
+      >
+          < ModalWindow images={images} imgId={imgId} />
+      </Modal>
+    </>
       
         
     </>

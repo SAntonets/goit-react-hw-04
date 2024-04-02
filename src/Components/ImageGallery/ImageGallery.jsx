@@ -2,7 +2,7 @@ import ImageCard from "../ImageCard/ImageCard";
 import css from "./ImageGallery.module.css";
 import clsx from 'clsx';
 
-const ImageGallery = ({ images }) => {
+const ImageGallery = ({ images, openModal, setImgId}) => {
   if (!Array.isArray(images)) {
     console.error("Images is not an array!");
     return null; 
@@ -12,7 +12,7 @@ const ImageGallery = ({ images }) => {
     <ul className={css.ImageGallery}>
       {images.map((image, index) => (
         <li key={index}>
-          <ImageCard image={image} />
+          <ImageCard image={image} handleClick={openModal}  setImgId={setImgId} />
         </li>
       ))}
     </ul>
