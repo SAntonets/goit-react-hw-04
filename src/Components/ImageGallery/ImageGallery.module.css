@@ -1,4 +1,5 @@
 .ImageGallery {
+  margin-top: 60px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

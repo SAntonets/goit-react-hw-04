@@ -1,22 +1,34 @@
-import ImageCard from "../ImageCard/ImageCard";
+import ImageCard from '../ImageCard/ImageCard'
 import css from "./ImageGallery.module.css";
 import clsx from 'clsx';
+import { forwardRef, useEffect, useRef } from 'react';
 
-const ImageGallery = ({ images, openModal, setImgId}) => {
+const ImageGallery = forwardRef(({ images, openModal, setImgId }, ref) => {
+  const lastImageRef = useRef(null); 
+
+  useEffect(() => {
+    
+    if (lastImageRef.current) {
+      lastImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [images]); 
+
   if (!Array.isArray(images)) {
     console.error("Images is not an array!");
     return null; 
   }
 
   return (
-    <ul className={css.ImageGallery}>
+    <ul className={css.ImageGallery} ref={ref}>
       {images.map((image, index) => (
-        <li key={index}>
-          <ImageCard image={image} handleClick={openModal}  setImgId={setImgId} />
+        <li key={image.id} ref={index === images.length - 1 ? lastImageRef : null}>
+          <ImageCard image={image} handleClick={openModal} setImgId={setImgId} />
         </li>
       ))}
     </ul>
   );
-};
+});
+
+ImageGallery.displayName = 'ImageGallery'; 
 
 export default ImageGallery;

@@ -1,3 +1,4 @@
+import css from "./ModalWindow.module.css"
 
 const ModalWindow = ({ images, imgId }) => {
     const foundImage = (id) => {
@@ -12,9 +13,9 @@ const ModalWindow = ({ images, imgId }) => {
     }
 
     return (
-        <div>
-            <img src={img.urls.regular} alt={img.alt_description} />
-        </div>
+        
+            <img className={css.ModalImg} src={img.urls.regular} alt={img.alt_description} />
+        
     );
 }
 

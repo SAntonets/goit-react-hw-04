@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 const ImageCard = ({ image, handleClick, setImgId}) => {
   return (
-    <div onClick={() => { handleClick(); setImgId(image.id);}}>
+    <div onClick={() => { handleClick(); setImgId(image.id);}} >
       <img className={css.ImageCard} src={image.urls.small} alt={image.alt_description} />
     </div>
   );
