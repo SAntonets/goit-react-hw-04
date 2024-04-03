@@ -104,6 +104,8 @@ useEffect(() => {
     transform: 'translate(-50%, -50%)',
     minWidth: '200px', 
     minHeight: '200px', 
+    maxWidth: '100%', 
+    maxHeight: '100vh', 
     padding: '20px',
     borderRadius: '8px',
     backgroundColor: '#1f1f1f', 
