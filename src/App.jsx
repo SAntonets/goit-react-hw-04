@@ -5,11 +5,11 @@ import { useState, useRef, useEffect} from 'react'
 import Modal from 'react-modal';
 
 
-import SearchBar from './Components/SearchBar/SearchBar'
-import searchImages from './Components/API/API';
-import ImageGallery from './Components/ImageGallery/ImageGallery';
-import LoadMoreBtn from './Components/LoadMoreBtn/LoadMoreBtn';
-import ModalWindow from './Components/ModalWindow/ModalWindow';
+import SearchBar from './components/SearchBar/SearchBar'
+import searchImages from './components/API/API';
+import ImageGallery from './components/ImageGallery/ImageGallery';
+import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
+import ModalWindow from './components/ModalWindow/ModalWindow';
 
 
 import './App.css'
