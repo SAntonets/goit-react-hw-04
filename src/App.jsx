@@ -1,15 +1,17 @@
 import 'normalize.css';
 import { toast, Toaster } from 'react-hot-toast';
-import { TailSpin } from 'react-loader-spinner';
+
 import { useState, useRef, useEffect} from 'react'
 import Modal from 'react-modal';
 
 
-import SearchBar from './components/SearchBar/SearchBar'
+import SearchBar from './components/SearchBar/SearchBar';
 import searchImages from './components/API/API';
 import ImageGallery from './components/ImageGallery/ImageGallery';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
-import ModalWindow from './components/ModalWindow/ModalWindow';
+import ImageModal from './components/ImageModal/ImageModal';
+import ErrorMessage from './components/ErrorMessage/ErrorMessage';
+import Loader from './components/Loader/Loader';
 
 
 import './App.css'
@@ -32,6 +34,7 @@ function App() {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [imgId, setImgId] = useState("");
   const lastLiRef = useRef(null);
+  const [errorDownload, setErrorDownload] = useState(false);
 
 
  Modal.setAppElement('#root');
@@ -48,20 +51,23 @@ function App() {
   } catch (error) {
     console.error('Error fetching images:', error.message);
     toast.error('Failed to fetch images');
+    setErrorDownload(true);  
   } finally {
       setLoading(false);
       }
   };
 
 
-const onClick = async () => {
+  const onClick = async () => {
   try {
     setLoading(true);
-    const nextPageImages = await searchImages(searchWord, page + 1);
-    setImages(prevImages => [...prevImages, ...nextPageImages.images]);
-    setPage(prevPage => prevPage + 1);
-    const lastLiElement = document.getElementById(`image-${nextPageImages.images[nextPageImages.images.length - 1].id}`);
-    lastLiRef.current = lastLiElement;
+    if (page < totalPages) {
+      const nextPageImages = await searchImages(searchWord, page + 1);
+      setImages(prevImages => [...prevImages, ...nextPageImages.images]);
+      setPage(prevPage => prevPage + 1);
+      const lastLiElement = document.getElementById(`image-${nextPageImages.images[nextPageImages.images.length - 1].id}`);
+      lastLiRef.current = lastLiElement;
+    }
   } catch (error) {
     console.error('Error fetching images:', error.message);
     toast.error('Failed to fetch images');
@@ -69,6 +75,7 @@ const onClick = async () => {
     setLoading(false);
   }
 };
+
 
 useEffect(() => {
   if (lastLiRef.current) {
@@ -125,8 +132,8 @@ useEffect(() => {
       <SearchBar onSubmit={onSubmit} />
    
       {!images || images.length === 0 ? <ImageGallery images={[]} /> : <ImageGallery ref={containerRef} images={images} openModal={openModal} setImgId={setImgId} />}
-    
-      {loading && <TailSpin />}
+      {errorDownload && <ErrorMessage/>}
+      {loading && <Loader />}
       {page < totalPages && <LoadMoreBtn onClick={onClick} />}
       
 
@@ -138,7 +145,7 @@ useEffect(() => {
           contentLabel="Example Modal"
           style={customStyles}
       >
-          < ModalWindow images={images} imgId={imgId} />
+          < ImageModal images={images} imgId={imgId} />
       </Modal>
     </>
       

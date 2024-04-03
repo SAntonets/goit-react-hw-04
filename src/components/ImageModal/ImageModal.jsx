@@ -1,6 +1,6 @@
 import css from "./ModalWindow.module.css"
 
-const ModalWindow = ({ images, imgId }) => {
+const ImageModal = ({ images, imgId }) => {
     const foundImage = (id) => {
     const found = images.find(image => image.id === id);
     return found;
@@ -19,6 +19,6 @@ const ModalWindow = ({ images, imgId }) => {
     );
 }
 
-export default ModalWindow;
+export default ImageModal;
   
 
