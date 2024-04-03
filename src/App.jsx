@@ -37,7 +37,11 @@ function App() {
   const [errorDownload, setErrorDownload] = useState(false);
 
 
- Modal.setAppElement('#root');
+  Modal.setAppElement('#root');
+  
+  useEffect(() => {
+    
+}, [searchWord ,images]);
 
 
   const onSubmit = async (searchText) => {
