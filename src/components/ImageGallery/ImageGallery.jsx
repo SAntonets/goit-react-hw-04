@@ -3,7 +3,7 @@ import css from "./ImageGallery.module.css";
 import clsx from 'clsx';
 import { forwardRef, useEffect, useRef } from 'react';
 
-const ImageGallery = forwardRef(({ images, openModal, setImgId }, ref) => {
+const ImageGallery = forwardRef(({ images, openModal}, ref) => {
   const lastImageRef = useRef(null); 
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const ImageGallery = forwardRef(({ images, openModal, setImgId }, ref) => {
     <ul className={css.ImageGallery} ref={ref}>
       {images.map((image, index) => (
         <li key={image.id} ref={index === images.length - 1 ? lastImageRef : null}>
-          <ImageCard image={image} handleClick={openModal} setImgId={setImgId} />
+          <ImageCard image={image} handleClick={openModal}/>
         </li>
       ))}
     </ul>

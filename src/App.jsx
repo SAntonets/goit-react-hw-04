@@ -1,15 +1,15 @@
-import 'normalize.css';
+
+import { useState, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
-import { useState, useRef, useEffect } from 'react';
-import Modal from 'react-modal';
 import SearchBar from './components/SearchBar/SearchBar';
-import searchImages from './components/API/API';
 import ImageGallery from './components/ImageGallery/ImageGallery';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
-import ImageModal from './components/ImageModal/ImageModal';
 import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 import Loader from './components/Loader/Loader';
+import ImageModal from './components/ImageModal/ImageModal';
+import searchImages from './components/API/API';
 import './App.css';
+import Modal from 'react-modal';
 
 function App() {
   const [images, setImages] = useState([]);
@@ -17,23 +17,15 @@ function App() {
   const [page, setPage] = useState(1);
   const [searchWord, setSearchWord] = useState("");
   const [totalPages, setTotalPages] = useState(0);
-  const containerRef = useRef(null);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [imgId, setImgId] = useState("");
-  const lastLiRef = useRef(null);
   const [errorDownload, setErrorDownload] = useState(false);
+  const [modalImageId, setModalImageId] = useState(null);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   Modal.setAppElement('#root');
 
   useEffect(() => {
     fetchImages();
   }, [page, searchWord]);
-
-  useEffect(() => {
-    if (lastLiRef.current) {
-      lastLiRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
-  }, [images]);
 
   const fetchImages = async () => {
     try {
@@ -45,7 +37,7 @@ function App() {
         setImages(prevImages => [...prevImages, ...data.images]);
       }
       setTotalPages(data.total);
-    } catch {
+    } catch (error) {
       toast.error('Failed to fetch images');
       setErrorDownload(true);
     } finally {
@@ -53,65 +45,38 @@ function App() {
     }
   };
 
-  const onSubmit = async (searchText) => {
+  const handleSubmit = async (searchText) => {
     setSearchWord(searchText);
     setPage(1);
   };
 
-  const onClick = async () => {
+  const handleLoadMore = () => {
     if (page < totalPages) {
       setPage(prevPage => prevPage + 1);
     }
   };
 
-  function openModal(imgId) {
+  const openModal = (id) => {
+    setModalImageId(id);
     setIsOpen(true);
-    setImgId(imgId);
-  }
+  };
 
-  const customStyles = {
-    overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      zIndex: 1000
-    },
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      minWidth: '200px',
-      minHeight: '200px',
-      maxWidth: '100%',
-      maxHeight: '100vh',
-      padding: '20px',
-      borderRadius: '8px',
-      backgroundColor: '#1f1f1f',
-      border: 'none',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
-    }
+  const closeModal = () => {
+    setModalImageId(null);
+    setIsOpen(false);
   };
 
   return (
-  <>
-    <Toaster position="top-center" reverseOrder={false} />
-    <SearchBar onSubmit={onSubmit} />
-    {images.length > 0 && <ImageGallery ref={containerRef} images={images} openModal={openModal} setImgId={setImgId} />}
-    {errorDownload && <ErrorMessage />}
-    {loading && <Loader />}
-    {page < totalPages && <LoadMoreBtn onClick={onClick} />}
-    <Modal
-      isOpen={modalIsOpen}
-      onRequestClose={() => setIsOpen(false)}
-      contentLabel="Image Modal"
-      style={customStyles}
-      shouldCloseOnOverlayClick={true}
-    >
-      <ImageModal images={images} imgId={imgId} />
-    </Modal>
-  </>
-);
+    <div className="app">
+      <Toaster position="top-center" reverseOrder={false} />
+      <SearchBar onSubmit={handleSubmit} />
+      <ImageGallery images={images} openModal={openModal} />
+      {errorDownload && <ErrorMessage />}
+      {loading && <Loader />}
+      {page < totalPages && <LoadMoreBtn onClick={handleLoadMore} />}
+      {modalImageId && <ImageModal images={images} modalImageId={modalImageId} closeModal={closeModal} modalIsOpen={modalIsOpen} />}
+    </div>
+  );
 }
 
 export default App;
