@@ -39,32 +39,34 @@ function App() {
 
   Modal.setAppElement('#root');
   
+   
   useEffect(() => {
+    async function fetchImages() {
+      try {
+        setLoading(true);
+      } catch {
+        toast.error('Failed to fetch images');
+        setErrorDownload(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+      fetchImages();
     
-}, [searchWord ,images]);
+  }, [images, searchWord]);
 
 
   const onSubmit = async (searchText) => {
     setSearchWord(searchText);
-    try {
     setImages([]);
-    setLoading(true);
     const data = await searchImages(searchText, page); 
       setImages(data.images);
       setTotalPages(data.total)
-  } catch (error) {
-    console.error('Error fetching images:', error.message);
-    toast.error('Failed to fetch images');
-    setErrorDownload(true);  
-  } finally {
-      setLoading(false);
-      }
-  };
+  }  
+  
 
 
   const onClick = async () => {
-  try {
-    setLoading(true);
     if (page < totalPages) {
       const nextPageImages = await searchImages(searchWord, page + 1);
       setImages(prevImages => [...prevImages, ...nextPageImages.images]);
@@ -72,12 +74,7 @@ function App() {
       const lastLiElement = document.getElementById(`image-${nextPageImages.images[nextPageImages.images.length - 1].id}`);
       lastLiRef.current = lastLiElement;
     }
-  } catch (error) {
-    console.error('Error fetching images:', error.message);
-    toast.error('Failed to fetch images');
-  } finally {
-    setLoading(false);
-  }
+  
 };
 
 
@@ -123,17 +120,18 @@ useEffect(() => {
     border: 'none', 
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
   }
-};
+    };
 
  
 
   return (
-    <>
+    
+      <>
         <Toaster
-  position="top-center"
-  reverseOrder={false}
-/>
-      <SearchBar onSubmit={onSubmit} />
+       position="top-center"
+        reverseOrder={false}
+        />
+        <SearchBar onSubmit={onSubmit} />
    
       {!images || images.length === 0 ? <ImageGallery images={[]} /> : <ImageGallery ref={containerRef} images={images} openModal={openModal} setImgId={setImgId} />}
       {errorDownload && <ErrorMessage/>}
