@@ -94,24 +94,24 @@ function App() {
   };
 
   return (
-    <>
-      <Toaster position="top-center" reverseOrder={false} />
-      <SearchBar onSubmit={onSubmit} />
-      <ImageGallery ref={containerRef} images={images} openModal={openModal} setImgId={setImgId} />
-      {errorDownload && <ErrorMessage />}
-      {loading && <Loader />}
-      {page < totalPages && <LoadMoreBtn onClick={onClick} />}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setIsOpen(false)}
-        contentLabel="Image Modal"
-        style={customStyles}
-        shouldCloseOnOverlayClick={true}
-      >
-        <ImageModal images={images} imgId={imgId} />
-      </Modal>
-    </>
-  );
+  <>
+    <Toaster position="top-center" reverseOrder={false} />
+    <SearchBar onSubmit={onSubmit} />
+    {images.length > 0 && <ImageGallery ref={containerRef} images={images} openModal={openModal} setImgId={setImgId} />}
+    {errorDownload && <ErrorMessage />}
+    {loading && <Loader />}
+    {page < totalPages && <LoadMoreBtn onClick={onClick} />}
+    <Modal
+      isOpen={modalIsOpen}
+      onRequestClose={() => setIsOpen(false)}
+      contentLabel="Image Modal"
+      style={customStyles}
+      shouldCloseOnOverlayClick={true}
+    >
+      <ImageModal images={images} imgId={imgId} />
+    </Modal>
+  </>
+);
 }
 
 export default App;
